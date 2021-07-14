@@ -38,9 +38,7 @@
         databaseName="${DB_DATABASENAME}"
         user="${DB_USER}"
         password="${DB_PASSWORD}"
-        ssl="true"
-        sslMode="verify-full"
-        sslRootCert="security/example-bank.pem"
+        ssl="false"
         />
     </dataSource>
 
