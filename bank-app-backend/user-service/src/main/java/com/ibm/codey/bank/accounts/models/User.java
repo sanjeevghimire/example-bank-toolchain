@@ -19,7 +19,7 @@ import lombok.Setter;
 @NamedQueries({
   @NamedQuery(name = "User.findUserByRegistryId", query = "SELECT e FROM User e WHERE e.subject = :subject"),
 })
-@Getter @Setter
+// @Getter @Setter
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,6 +40,30 @@ public class User implements Serializable {
 
     public User() {
         this.userId = UUID.randomUUID().toString();
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public boolean isConsentGiven() {
+        return consentGiven;
+    }
+
+    public void setConsentGiven(boolean consentGiven) {
+        this.consentGiven = consentGiven;
+    }
+
+    public boolean isDeleteRequested() {
+        return deleteRequested;
+    }
+
+    public void setDeleteRequested(boolean deleteRequested) {
+        this.deleteRequested = deleteRequested;
     }
 
 }
