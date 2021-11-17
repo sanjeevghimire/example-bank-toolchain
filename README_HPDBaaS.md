@@ -1,4 +1,4 @@
-# Deploy a cloud-native application on IBM Cloud for Financial Services using Hyperprotect Services
+# Securing cloud-native application on IBM Cloud for Financial Services using Hyperprotect Services
 
 In this code pattern, we show how to deploy a microservices based back-end in OpenShift 4.5 using IBM Cloud Toolchain CI/CD service. As part of the release of [IBM Cloud for Financial Services](https://developer.ibm.com/blogs/developer-introduction-to-ibm-cloud-for-financial-services) support for containerized applications, this code pattern shows how to use IBM Toolchain to create a Tekton pipeline that integrates IBM Code Risk Analyzer (CRA), IBM Container Registry and Vulnerability Advisor. CRA runs an infrastructure and deployment artifact scan against your GitHub repository as part of the an overall DevSecOps system.
 
@@ -7,6 +7,8 @@ In this code pattern, we will use IBM Cloud Hyper Protect DBaaS for PostgresSQL 
 IBM Cloud® Hyper Protect Crypto Services is a single tenant key management service and hardware security module (HSM) based on IBM Cloud that supports industry standards such as PKCS #11. Its built on IBM LinuxONE technology.
 With this service, client can create and own your master key (KYOK) that is used to control and manage the HSM. Using this IBM can't acess the client keys. Hyper Protect Crypto Services is also the only service in the cloud industry that is built on FIPS 140-2 Level 4-certified hardware.To read more about Hyper Protect Crypto Services, click [here](https://cloud.ibm.com/docs/hs-crypto?topic=hs-crypto-get-started).
 
+[IBM Cloud Hyper Protect DBaaS](https://www.ibm.com/cloud/hyper-protect-dbaas) offers enterprise cloud database environments with high availability for sensitive data workloads. LinuxONE technology provides built-in data encryption with excellent vertical scalability and performance. Protect against data breach threats and data manipulation by privileged users.
+
 Hyper Protect DBaaS for PostgreSQL provides PostgreSQL database clusters in the IBM Cloud. Each Hyper Protect DBaaS database cluster has one primary node and two secondary nodes (replicas that back up the primary).To read more about it, click [here](https://cloud.ibm.com/docs/hyper-protect-dbaas-for-postgresql?topic=hyper-protect-dbaas-for-postgresql-gettingstarted).
 
 ## Architecture
@@ -14,6 +16,12 @@ Hyper Protect DBaaS for PostgreSQL provides PostgreSQL database clusters in the 
 The example bank system includes several microservices for handling user authentication and transaction mechanics. It also uses IBM Hyper Protect DBaaS for PostgreSQL with IBM Hyper Protect Crypto services to protect data with envelope encryption.
 
 ![architecture](images/architecture-w-hpdbaas.png)
+
+## Key ceremony
+
+With Hyper Protect Services, you can keep your own key (KYOK). The key ceremony is a process of loading your own master key to your service instance (cloud account). Hyper Protect Crypto Services sets up signature keys for crypto unit administrators during the service initialization process to ensure that the master key parts are loaded to the Hardware Security Module (HSM) without interception. By using the TKE CLI plug-in with the IBM Cloud CLI, you can create crypto units, add signatures, load master key parts, and commit and activate them. The key ceremony process is necessary when you use Hyper Protect Crypto Services to ensure that no one can get full access of the master key, even the crypto unit administrators.
+
+![Key Ceremony](images/key-ceremony1.png)
 
 ## Deployment pipeline
 
@@ -160,6 +168,16 @@ When you create a Hyper Protect DBaaS for PostgreSQL service instance, select yo
 The new Hyper Protect DBaaS for PostgreSQL service instance uses your Hyper Protect Crypto Services root key to encrypt your data. 
 
 ![Hyper Protect Dbaas with Crypto Services](images/dbaas-crypto.png)
+
+The Hyper Protect DBaaS for PostgreSQL also gives you a certificate which you can use in your application for end-to-end encryption and security. Make sure to download it and copy it to required locations as below:
+
+```bash
+1. bank-app-backend/transaction-service/src/main/resources/security/
+2. bank-app-backend/user-service/src/main/resources/security/
+3. data_model/
+
+```
+
 
 ### 9. Create required secrets in OpenShift project
 
